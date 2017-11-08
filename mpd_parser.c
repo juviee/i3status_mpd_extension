@@ -8,9 +8,9 @@
 //#define MAX_LENGTH_ARTIST 10
 //#define MAX_LENGTH_TITLE 15
 enum parsing_lengths{
-    MAX_LENGTH_ARTIST = 10,
-    MAX_LENGTH_TITLE = 25,
-    MAX_LENGTH_RESPONSE = 60,
+    MAX_LENGTH_ARTIST = 60,
+    MAX_LENGTH_TITLE = 60,
+    MAX_LENGTH_RESPONSE = 150,
 };
 
 enum err_codes{
@@ -24,7 +24,7 @@ enum err_codes{
 int parse_status(struct mpd_connection*, char*, size_t len); //conn->statusbar
 int parse_seconds_to_minutes(unsigned sec, char*, size_t len); //seconds->min:sec
 int get_player_options(struct mpd_status*, char*, size_t len);//status->rzsc(guaranty: len<=7)
-int get_song_tag(struct mpd_song*,char* tag_name, int idx, char*, size_t len );//song->song_title
+int get_song_tag(struct mpd_song*,char* tag_name, char*, size_t len );//song->song_title
 
 
 int main(int argc, char* argv[]){
@@ -156,9 +156,9 @@ int parse_status(struct mpd_connection* mpd_con, char* string_ptr, size_t len){
     //parsing artist and track
 
     if(len < MAX_LENGTH_ARTIST)
-        ln_op = get_song_tag(song, "ARTIST", 0, string_ptr, len);
+        ln_op = get_song_tag(song, "ARTIST", string_ptr, len);
     else
-        ln_op = get_song_tag(song, "ARTIST", 0,\
+        ln_op = get_song_tag(song, "ARTIST",\
                 string_ptr, MAX_LENGTH_ARTIST);
     len-=ln_op;
     
@@ -166,9 +166,9 @@ int parse_status(struct mpd_connection* mpd_con, char* string_ptr, size_t len){
     strncat(string_ptr++, "-", len--);
     strncat(string_ptr++, " ", len--);
     if(len < MAX_LENGTH_TITLE)
-        ln_op = get_song_tag(song, "TITLE", 0, string_ptr, len);
+        ln_op = get_song_tag(song, "TITLE", string_ptr, len);
     else
-        ln_op = get_song_tag(song, "TITLE", 0,\
+        ln_op = get_song_tag(song, "TITLE",\
                 string_ptr, MAX_LENGTH_TITLE);
     len-=ln_op;
     string_ptr+=ln_op;
@@ -231,16 +231,20 @@ int parse_seconds_to_minutes(unsigned sec, char* str_ptr, size_t len){
     return ln;
 }
 
-int get_song_tag(struct mpd_song* song, char* tag_name,int idx,\
+int get_song_tag(struct mpd_song* song, char* tag_name,\
         char* string_ptr, size_t len){//song->song_title
     int tag = mpd_tag_name_iparse(tag_name);
     int ln_s = 0;
+    int iterator = 0;
+    const char* tag_str = NULL;
 //    printf("%d", tag);
-    const char* tag_str = mpd_song_get_tag(song, tag, 0);
-    if(tag_str){
-        strncat(string_ptr, tag_str,len);
-        ln_s = strlen(tag_str);
-    }
+    do{
+        const char* tag_str = mpd_song_get_tag(song, tag, iterator++);
+        if(tag_str){
+            strncat(string_ptr, tag_str, len);
+            ln_s += strlen(tag_str);
+        }
+    }while(tag_str);
     //free(tag_str);
     return ln_s;
 }
