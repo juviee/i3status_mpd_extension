@@ -1,7 +1,7 @@
 ## Synopsis
 
 Wrapper extension for i3status that supports Music Player Daemon. Makes sweet output to your i3status bar; like this: 
-[>rz](1:04|2:10)Gidropony - Paradise
+\[>rz\](1:04|2:10)Gidropony - Paradise
 
 ## Code Example
 
