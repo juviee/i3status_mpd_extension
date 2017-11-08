@@ -222,7 +222,10 @@ int parse_seconds_to_minutes(unsigned sec, char* str_ptr, size_t len){
     int minutes = sec/60;
     int sec_remained = sec%60;
     char time[20];
-    snprintf(time, len, "%d:%d", minutes, sec_remained);
+    if(sec_remained<10)
+        snprintf(time, len, "%d:0%d", minutes, sec_remained);
+    else
+        snprintf(time, len, "%d:%d", minutes, sec_remained);
     int ln = strlen(time);
     strncat(str_ptr, time, len);
     return ln;
