@@ -3,7 +3,7 @@
 state=""
 
 update_state() {
-    state="$(i3mpdstatus cuso4ek 0 itg3t5better)"
+    state="$(i3mpdstatus name 6600 password)"
 }
 
 

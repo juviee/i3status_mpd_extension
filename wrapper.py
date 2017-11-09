@@ -25,20 +25,19 @@
 # details.
 
 import sys
-import json
 import subprocess as sp
 
 def get_governor():
     """ Get the current governor for cpu0, assuming all CPUs use the same. """
     with open('/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor') as fp:
         return fp.readlines()[0].strip()
+
 def get_mpd_status():
     st = sp.run(["i3mpdstatus", "juviee", "0" ,"ololo"], stdout = sp.PIPE)
     if(st.returncode == 0):
         return bytes.decode(st.stdout)
     else:
         return "Failed_Mpd"
-
 
 def print_line(message):
     """ Non-buffered printing to stdout. """
@@ -58,7 +57,6 @@ def read_line():
     except KeyboardInterrupt:
         sys.exit()
 
-
 if __name__ == '__main__':
     # Skip the first line which contains the version header.
     print_line(read_line())
@@ -71,11 +69,8 @@ if __name__ == '__main__':
         # ignore comma at start of lines
         if line.startswith(','):
             line, prefix = line[1:], ','
-
-
     # insert information into the start of the json, but could be anywhere
     # CHANGE THIS LINE TO INSERT SOMETHING ELSE
-        
         s=str('{{"full_text":"{}","name":"mpd"}},').format(get_mpd_status())
         # and echo back new encoded json
         line = '[' + s + line[1:]
