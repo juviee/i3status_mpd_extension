@@ -1,7 +1,6 @@
 #!/bin/sh
 # shell script to prepend i3status with more stuff
 state=""
-err_st=""
 update_state() {
     state="$(i3mpdstatus host 6600 password 2>&1)"
     if [ $? -ne 0 ]; then
