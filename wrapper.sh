@@ -1,10 +1,13 @@
-#!/bin/sh
+#!/bin/bash
 # shell script to prepend i3status with more stuff
 state=""
+err_st=""
+
 update_state() {
-    state="$(i3mpdstatus host 6600 password 2>&1)"
+    state="$(i3mpdstatus cuso4ek 0 itg3t5better 2>&1)"
+    state="${state//\"/\\\"}"
     if [ $? -ne 0 ]; then
-        state="mpdError"
+        state="mpd_error"
     fi
 }
 
